@@ -94,8 +94,8 @@ class EventAccess(Base):
 
 
 # PaymentLog model
-class PaymentLog(Base):
-    __tablename__ = "payment_log"
+class Payment(Base):
+    __tablename__ = "payment"
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id"))
     amount = Column(Float)
@@ -104,4 +104,4 @@ class PaymentLog(Base):
     phone_number = Column(String)
 
     # Relationships
-    user = relationship("Users", back_populates="payment_logs")
+    user = relationship("Users", back_populates="payment")

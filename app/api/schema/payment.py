@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from typing import Optional
 
 
-class PaymentLogBase(BaseModel):
+class PaymentBase(BaseModel):
     user_id: int
     amount: float
     currency: str
@@ -10,24 +10,24 @@ class PaymentLogBase(BaseModel):
     phone_number: Optional[str] = None
 
 
-class PaymentLogCreate(PaymentLogBase):
+class PaymentCreate(PaymentBase):
     pass
 
 
-class PaymentLogUpdate(PaymentLogBase):
+class PaymentUpdate(PaymentBase):
     pass
 
 
-class PaymentLogInDBBase(PaymentLogBase):
+class PaymentInDBBase(PaymentBase):
     id: int
 
     class Config:
         orm_mode = True
 
 
-class PaymentLog(PaymentLogInDBBase):
+class Payment(PaymentInDBBase):
     pass
 
 
-class PaymentLogInDB(PaymentLogInDBBase):
+class PaymentInDB(PaymentInDBBase):
     pass

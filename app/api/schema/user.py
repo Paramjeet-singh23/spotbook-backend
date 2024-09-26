@@ -2,7 +2,7 @@ from pydantic import BaseModel, EmailStr
 from typing import List, Optional
 from datetime import datetime
 from app.api.schema.event import Event, EventAccess
-from app.api.schema.payment import PaymentLog
+from app.api.schema.payment import Payment
 
 
 class UserBase(BaseModel):
@@ -41,7 +41,7 @@ class User(UserInDBBase):
     created_events: List[Event] = []
     managed_events: List[EventAccess] = []
     event_access: List[EventAccess] = []
-    payment_logs: List[PaymentLog] = []
+    payment_logs: List[Payment] = []
 
 
 class UserInDB(UserInDBBase):
