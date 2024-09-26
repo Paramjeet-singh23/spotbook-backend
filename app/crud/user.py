@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from app.db.models import User
-from app.api.schema.user import UserCreate, UserUpdate
+from app.schema.user import UserCreate, UserUpdate
 
 
 def get_user(db: Session, user_id: int):

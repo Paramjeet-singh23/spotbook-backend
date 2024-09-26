@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from typing import Optional, List
 from app.db.models import Payment
-from app.api.schema.payment import PaymentCreate, PaymentUpdate
+from app.schema.payment import PaymentCreate, PaymentUpdate
 
 
 def get_payment(db: Session, payment_id: int) -> Optional[Payment]:

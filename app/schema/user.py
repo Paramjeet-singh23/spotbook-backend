@@ -1,8 +1,8 @@
 from pydantic import BaseModel, EmailStr
 from typing import List, Optional
 from datetime import datetime
-from app.api.schema.event import Event, EventAccess
-from app.api.schema.payment import Payment
+from app.schema.event import Event, EventAccess
+from app.schema.payment import Payment
 
 
 class UserBase(BaseModel):
