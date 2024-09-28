@@ -1,12 +1,20 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Boolean, Float
+import uuid
+from sqlalchemy import Column, String, ForeignKey, DateTime, Boolean, Float
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
-from app.db.session import Base
+from app.db.base import Base
 
 
 # Role model
 class Role(Base):
     __tablename__ = "role"
-    id = Column(Integer, primary_key=True)
+    id = Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        unique=True,
+        nullable=False,
+    )
     name = Column(String)
 
     # Relationships
@@ -16,9 +24,15 @@ class Role(Base):
 # EventType model
 class EventType(Base):
     __tablename__ = "event_type"
-    id = Column(Integer, primary_key=True)
+    id = Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        unique=True,
+        nullable=False,
+    )
     name = Column(String)
-    create_by = Column(Integer, ForeignKey("users.id"))
+    create_by = Column(UUID(as_uuid=True), ForeignKey("users.id"))
     created_at = Column(DateTime)
 
     # Relationships
@@ -28,15 +42,21 @@ class EventType(Base):
 # Event model
 class Event(Base):
     __tablename__ = "event"
-    id = Column(Integer, primary_key=True)
+    id = Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        unique=True,
+        nullable=False,
+    )
     name = Column(String)
-    create_by = Column(Integer, ForeignKey("users.id"))
-    event_type = Column(Integer, ForeignKey("event_type.id"))
+    create_by = Column(UUID(as_uuid=True), ForeignKey("users.id"))
+    event_type = Column(UUID(as_uuid=True), ForeignKey("event_type.id"))
     is_repetitive = Column(Boolean)
     event_date = Column(DateTime)
     created_at = Column(DateTime)
     updated_at = Column(DateTime)
-    updated_by = Column(Integer, ForeignKey("users.id"))
+    updated_by = Column(UUID(as_uuid=True), ForeignKey("users.id"))
     field = Column(String)
 
     # Relationships
@@ -51,7 +71,13 @@ class Event(Base):
 # Users model
 class User(Base):
     __tablename__ = "users"
-    id = Column(Integer, primary_key=True)
+    id = Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        unique=True,
+        nullable=False,
+    )
     name = Column(String)
     email = Column(String)
     first_name = Column(String)
@@ -77,11 +103,17 @@ class User(Base):
 # EventAccess model
 class EventAccess(Base):
     __tablename__ = "event_access"
-    id = Column(Integer, primary_key=True)
-    event_id = Column(Integer, ForeignKey("event.id"))
-    user_id = Column(Integer, ForeignKey("users.id"))
-    role_id = Column(Integer, ForeignKey("role.id"))
-    managed_by = Column(Integer, ForeignKey("users.id"))
+    id = Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        unique=True,
+        nullable=False,
+    )
+    event_id = Column(UUID(as_uuid=True), ForeignKey("event.id"))
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"))
+    role_id = Column(UUID(as_uuid=True), ForeignKey("role.id"))
+    managed_by = Column(UUID(as_uuid=True), ForeignKey("users.id"))
     created_at = Column(DateTime)
 
     # Relationships
@@ -96,8 +128,14 @@ class EventAccess(Base):
 # PaymentLog model
 class Payment(Base):
     __tablename__ = "payment"
-    id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
+    id = Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        unique=True,
+        nullable=False,
+    )
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"))
     amount = Column(Float)
     currency = Column(String)
     payment_method = Column(String)

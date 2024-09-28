@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List
 
 from app.schema.user import User, UserCreate
-from app.crud.user import get_user, get_users, create_user
+from app.crud.user import get_user, get_users, create_user, get_user_by_email
 from app.db.session import get_db
 
 router = APIRouter()
@@ -17,7 +17,7 @@ def read_users(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
 
 @router.post("/", response_model=User)
 def create_new_user(user: UserCreate, db: Session = Depends(get_db)):
-    db_user = get_user(db, email=user.email)
+    db_user = get_user_by_email(db, email=user.email)
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
     return create_user(db=db, user=user)
