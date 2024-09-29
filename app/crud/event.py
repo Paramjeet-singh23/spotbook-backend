@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from typing import Optional, List
 from datetime import datetime, timezone
-from app.db.models import Event
+from app.db.model.event import Event
 from app.schema.event import EventCreate, EventUpdate
 
 

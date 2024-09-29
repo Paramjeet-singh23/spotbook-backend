@@ -14,7 +14,7 @@ fileConfig(config.config_file_name)
 # add your model's MetaData object here
 # for 'autogenerate' support
 from app.db.base import Base  # Import your Base model
-from app.db.models import User, Role, EventType, Event  # Import your models
+from app.db.model import user, event, payment  # Import your models
 
 target_metadata = Base.metadata
 

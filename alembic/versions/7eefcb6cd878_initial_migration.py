@@ -1,8 +1,8 @@
 """Initial migration
 
-Revision ID: 032213b4edde
+Revision ID: 7eefcb6cd878
 Revises:
-Create Date: 2024-09-28 19:54:40.082726
+Create Date: 2024-09-29 12:47:47.484339
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = "032213b4edde"
+revision = "7eefcb6cd878"
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -21,35 +21,41 @@ def upgrade() -> None:
     op.create_table(
         "role",
         sa.Column("id", sa.UUID(), nullable=False),
-        sa.Column("name", sa.String(), nullable=True),
+        sa.Column("name", sa.String(), nullable=False),
         sa.PrimaryKeyConstraint("id"),
         sa.UniqueConstraint("id"),
     )
     op.create_table(
-        "users",
+        "user",
         sa.Column("id", sa.UUID(), nullable=False),
-        sa.Column("name", sa.String(), nullable=True),
-        sa.Column("email", sa.String(), nullable=True),
-        sa.Column("first_name", sa.String(), nullable=True),
-        sa.Column("last_name", sa.String(), nullable=True),
-        sa.Column("phone_number", sa.String(), nullable=True),
-        sa.Column("sex", sa.String(), nullable=True),
-        sa.Column("created_at", sa.DateTime(), nullable=True),
+        sa.Column("email", sa.String(), nullable=False),
+        sa.Column("first_name", sa.String(), nullable=False),
+        sa.Column("last_name", sa.String(), nullable=False),
+        sa.Column("phone_number", sa.String(), nullable=False),
+        sa.Column("sex", sa.Enum("MALE", "FEMALE", name="genderenum"), nullable=False),
         sa.Column("last_login", sa.DateTime(), nullable=True),
+        sa.Column("created_at", sa.DateTime(), nullable=True),
         sa.Column("updated_at", sa.DateTime(), nullable=True),
-        sa.Column("hashed_password", sa.String(), nullable=True),
+        sa.Column("password", sa.String(), nullable=False),
         sa.PrimaryKeyConstraint("id"),
+        sa.UniqueConstraint("email"),
         sa.UniqueConstraint("id"),
     )
     op.create_table(
         "event_type",
         sa.Column("id", sa.UUID(), nullable=False),
-        sa.Column("name", sa.String(), nullable=True),
-        sa.Column("create_by", sa.UUID(), nullable=True),
-        sa.Column("created_at", sa.DateTime(), nullable=True),
+        sa.Column("name", sa.String(), nullable=False),
+        sa.Column("create_by", sa.UUID(), nullable=False),
+        sa.Column("created_at", sa.DateTime(), nullable=False),
+        sa.Column("updated_at", sa.DateTime(), nullable=False),
+        sa.Column("updated_by", sa.UUID(), nullable=True),
         sa.ForeignKeyConstraint(
             ["create_by"],
-            ["users.id"],
+            ["user.id"],
+        ),
+        sa.ForeignKeyConstraint(
+            ["updated_by"],
+            ["user.id"],
         ),
         sa.PrimaryKeyConstraint("id"),
         sa.UniqueConstraint("id"),
@@ -57,14 +63,14 @@ def upgrade() -> None:
     op.create_table(
         "payment",
         sa.Column("id", sa.UUID(), nullable=False),
-        sa.Column("user_id", sa.UUID(), nullable=True),
-        sa.Column("amount", sa.Float(), nullable=True),
-        sa.Column("currency", sa.String(), nullable=True),
-        sa.Column("payment_method", sa.String(), nullable=True),
+        sa.Column("user_id", sa.UUID(), nullable=False),
+        sa.Column("amount", sa.Float(), nullable=False),
+        sa.Column("currency", sa.String(), nullable=False),
+        sa.Column("payment_method", sa.String(), nullable=False),
         sa.Column("phone_number", sa.String(), nullable=True),
         sa.ForeignKeyConstraint(
             ["user_id"],
-            ["users.id"],
+            ["user.id"],
         ),
         sa.PrimaryKeyConstraint("id"),
         sa.UniqueConstraint("id"),
@@ -72,18 +78,17 @@ def upgrade() -> None:
     op.create_table(
         "event",
         sa.Column("id", sa.UUID(), nullable=False),
-        sa.Column("name", sa.String(), nullable=True),
-        sa.Column("create_by", sa.UUID(), nullable=True),
-        sa.Column("event_type", sa.UUID(), nullable=True),
+        sa.Column("name", sa.String(), nullable=False),
+        sa.Column("create_by", sa.UUID(), nullable=False),
+        sa.Column("event_type", sa.UUID(), nullable=False),
         sa.Column("is_repetitive", sa.Boolean(), nullable=True),
         sa.Column("event_date", sa.DateTime(), nullable=True),
-        sa.Column("created_at", sa.DateTime(), nullable=True),
-        sa.Column("updated_at", sa.DateTime(), nullable=True),
-        sa.Column("updated_by", sa.UUID(), nullable=True),
-        sa.Column("field", sa.String(), nullable=True),
+        sa.Column("created_at", sa.DateTime(), nullable=False),
+        sa.Column("updated_at", sa.DateTime(), nullable=False),
+        sa.Column("updated_by", sa.UUID(), nullable=False),
         sa.ForeignKeyConstraint(
             ["create_by"],
-            ["users.id"],
+            ["user.id"],
         ),
         sa.ForeignKeyConstraint(
             ["event_type"],
@@ -91,7 +96,7 @@ def upgrade() -> None:
         ),
         sa.ForeignKeyConstraint(
             ["updated_by"],
-            ["users.id"],
+            ["user.id"],
         ),
         sa.PrimaryKeyConstraint("id"),
         sa.UniqueConstraint("id"),
@@ -99,26 +104,32 @@ def upgrade() -> None:
     op.create_table(
         "event_access",
         sa.Column("id", sa.UUID(), nullable=False),
-        sa.Column("event_id", sa.UUID(), nullable=True),
-        sa.Column("user_id", sa.UUID(), nullable=True),
-        sa.Column("role_id", sa.UUID(), nullable=True),
-        sa.Column("managed_by", sa.UUID(), nullable=True),
-        sa.Column("created_at", sa.DateTime(), nullable=True),
+        sa.Column("event_id", sa.UUID(), nullable=False),
+        sa.Column("user_id", sa.UUID(), nullable=False),
+        sa.Column("role_id", sa.UUID(), nullable=False),
+        sa.Column("managed_by", sa.UUID(), nullable=False),
+        sa.Column("created_at", sa.DateTime(), nullable=False),
+        sa.Column("updated_at", sa.DateTime(), nullable=False),
+        sa.Column("updated_by", sa.UUID(), nullable=False),
         sa.ForeignKeyConstraint(
             ["event_id"],
             ["event.id"],
         ),
         sa.ForeignKeyConstraint(
             ["managed_by"],
-            ["users.id"],
+            ["user.id"],
         ),
         sa.ForeignKeyConstraint(
             ["role_id"],
             ["role.id"],
         ),
         sa.ForeignKeyConstraint(
+            ["updated_by"],
+            ["user.id"],
+        ),
+        sa.ForeignKeyConstraint(
             ["user_id"],
-            ["users.id"],
+            ["user.id"],
         ),
         sa.PrimaryKeyConstraint("id"),
         sa.UniqueConstraint("id"),
@@ -132,6 +143,6 @@ def downgrade() -> None:
     op.drop_table("event")
     op.drop_table("payment")
     op.drop_table("event_type")
-    op.drop_table("users")
+    op.drop_table("user")
     op.drop_table("role")
     # ### end Alembic commands ###

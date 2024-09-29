@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from typing import Optional, List
-from app.db.models import Payment
+from app.db.model.payment import Payment
 from app.schema.payment import PaymentCreate, PaymentUpdate
 
 
