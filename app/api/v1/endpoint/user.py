@@ -22,7 +22,7 @@ def read_users(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
     return users
 
 
-@router.post("/", response_model=User)
+@router.post("/sign-up", response_model=User)
 def create_new_user(user: UserCreate, db: Session = Depends(get_db)):
     db_user = get_user_by_email(db, email=user.email)
     if db_user:
@@ -57,5 +57,7 @@ def login_for_access_token(
             detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    access_token = create_access_token(data={"sub": user.email})
+    access_token = create_access_token(
+        data={"sub": user.email, "user_id": str(user.id)}
+    )
     return {"access_token": access_token, "token_type": "bearer"}

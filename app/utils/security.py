@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from typing import Optional
 from pydantic import BaseModel
 from app.config import settings
+from uuid import UUID
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -18,6 +19,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 class TokenData(BaseModel):
     email: Optional[str] = None
+    user_id: Optional[UUID] = None
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
@@ -39,9 +41,17 @@ def verify_token(token: str, credentials_exception):
             token, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM]
         )
         email: str = payload.get("sub")
+        user_id: UUID = payload.get("user_id")
         if email is None:
             raise credentials_exception
-        token_data = TokenData(email=email)
+        token_data = TokenData(email=email, user_id=user_id)
     except jwt.PyJWTError:
         raise credentials_exception
     return token_data
+
+
+def get_user_id_from_token(token: str):
+    payload = jwt.decode(
+        token, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM]
+    )
+    return UUID(payload.get("user_id"))

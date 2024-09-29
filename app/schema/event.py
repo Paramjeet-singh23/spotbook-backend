@@ -1,68 +1,64 @@
-from typing import Optional
-from datetime import datetime
 from pydantic import BaseModel
+from uuid import UUID
+from datetime import datetime
+from enum import Enum
 
 
-class EventBase(BaseModel):
+class RoleEnum(str, Enum):
+    ADMIN = "admin"
+    USER = "user"
+    MODERATOR = "moderator"
+
+
+class EventTypeEnum(str, Enum):
+    ONLINE = "online"
+    OFFLINE = "offline"
+
+
+class EventCreate(BaseModel):
     name: str
-    create_by: int
-    event_type: int
-    is_repetitive: bool
+    event_type: EventTypeEnum
+    is_repetitive: bool = False
     event_date: datetime
-    field: Optional[str] = None
 
 
-class EventCreate(EventBase):
-    pass
+class EventUpdate(BaseModel):
+    name: str
+    event_type: EventTypeEnum
+    is_repetitive: bool = False
+    event_date: datetime
 
 
-class EventUpdate(EventBase):
-    updated_by: int
-
-
-class EventInDBBase(EventBase):
-    id: int
+class Event(BaseModel):
+    id: UUID
+    name: str
+    event_type: EventTypeEnum
+    # is_repetitive: bool
+    event_date: datetime
+    create_by: UUID
     created_at: datetime
-    updated_at: Optional[datetime] = None
+    updated_at: datetime
+    updated_by: UUID
 
     class Config:
         orm_mode = True
 
 
-class Event(EventInDBBase):
-    pass
+class EventAccessCreate(BaseModel):
+    event_id: UUID
+    user_id: UUID
+    role: RoleEnum
 
 
-class EventInDB(EventInDBBase):
-    pass
-
-
-class EventAccessBase(BaseModel):
-    event_id: int
-    user_id: int
-    role_id: int
-    managed_by: int
-
-
-class EventAccessCreate(EventAccessBase):
-    pass
-
-
-class EventAccessUpdate(EventAccessBase):
-    pass
-
-
-class EventAccessInDBBase(EventAccessBase):
-    id: int
+class EventAccess(BaseModel):
+    id: UUID
+    event_id: UUID
+    user_id: UUID
+    role: RoleEnum
+    managed_by: UUID
     created_at: datetime
+    updated_at: datetime
+    updated_by: UUID
 
     class Config:
         orm_mode = True
-
-
-class EventAccess(EventAccessInDBBase):
-    pass
-
-
-class EventAccessInDB(EventAccessInDBBase):
-    pass

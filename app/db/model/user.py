@@ -5,6 +5,14 @@ from sqlalchemy.orm import relationship
 from app.db.base import Base
 from enum import Enum as PyEnum
 
+import enum
+
+
+class RoleEnum(enum.Enum):
+    ADMIN = "admin"
+    USER = "user"
+    MODERATOR = "moderator"
+
 
 class GenderEnum(PyEnum):
     MALE = "Male"
@@ -48,19 +56,3 @@ class User(Base):
         back_populates="user",
     )
     payment = relationship("Payment", back_populates="user")
-
-
-# Role model
-class Role(Base):
-    __tablename__ = "role"
-    id = Column(
-        UUID(as_uuid=True),
-        primary_key=True,
-        default=uuid.uuid4,
-        unique=True,
-        nullable=False,
-    )
-    name = Column(String, nullable=False)
-
-    # Relationships
-    event_accesses = relationship("EventAccess", back_populates="role")

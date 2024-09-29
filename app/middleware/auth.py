@@ -15,7 +15,12 @@ class AuthMiddleware(BaseHTTPMiddleware):
         super().__init__(app)
 
     async def dispatch(self, request: Request, call_next):
-        if request.url.path in ["/api/user/token", "/docs", "/openapi.json"]:
+        if request.url.path in [
+            "/api/user/token",
+            "/docs",
+            "/openapi.json",
+            "/api/user/sign-up",
+        ]:
             response = await call_next(request)
             return response
 
@@ -37,7 +42,6 @@ class AuthMiddleware(BaseHTTPMiddleware):
 
                 # Use context manager for database session
                 with next(get_db()) as db:
-                    print(token_data.email)
                     user = get_user_by_email(db, email=token_data.email)
                     if user is None:
                         raise credentials_exception
