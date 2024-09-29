@@ -24,7 +24,7 @@ class User(Base):
     email = Column(String, nullable=False, unique=True)
     first_name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)
-    phone_number = Column(String, nullable=False)
+    phone_number = Column(String, nullable=False, unique=True)
     sex = Column(Enum(GenderEnum), nullable=False)
     last_login = Column(DateTime, default=func.now(), onupdate=func.now())
     created_at = Column(DateTime, default=func.now())

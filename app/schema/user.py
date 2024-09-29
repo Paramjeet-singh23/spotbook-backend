@@ -32,7 +32,6 @@ class UserInDBBase(UserBase):
     created_at: datetime
     last_login: Optional[datetime] = None
     updated_at: datetime
-    password: str
 
     class Config:
         orm_mode = True
