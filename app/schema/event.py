@@ -1,18 +1,7 @@
 from pydantic import BaseModel
 from uuid import UUID
 from datetime import datetime
-from enum import Enum
-
-
-class RoleEnum(str, Enum):
-    ADMIN = "admin"
-    USER = "user"
-    MODERATOR = "moderator"
-
-
-class EventTypeEnum(str, Enum):
-    ONLINE = "online"
-    OFFLINE = "offline"
+from app.db.model.event import EventTypeEnum, RoleEnum
 
 
 class EventCreate(BaseModel):
@@ -33,7 +22,7 @@ class Event(BaseModel):
     id: UUID
     name: str
     event_type: EventTypeEnum
-    # is_repetitive: bool
+    is_repetitive: bool
     event_date: datetime
     create_by: UUID
     created_at: datetime

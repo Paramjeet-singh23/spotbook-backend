@@ -44,8 +44,8 @@ def custom_openapi():
 # Assign the custom OpenAPI function
 app.openapi = custom_openapi
 
-app.add_middleware(AuthMiddleware)
 app.include_router(api_router, prefix="/api")
+app.add_middleware(AuthMiddleware)
 
 # Print settings to verify
 print(f"Host: {settings.HOST}, Port: {settings.PORT}")

@@ -26,7 +26,7 @@ from app.crud.event import check_user_access_to_event
 router = APIRouter()
 
 
-@router.post("/", response_model=None)
+@router.post("/", response_model=Event)
 def create_event_endpoint(
     event: EventCreate,
     db: Session = Depends(get_db),

@@ -3,7 +3,6 @@ from sqlalchemy import Column, String, ForeignKey, DateTime, Boolean, func, Enum
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from app.db.base import Base
-
 import enum
 
 
@@ -11,10 +10,6 @@ class RoleEnum(enum.Enum):
     ADMIN = "admin"
     USER = "user"
     MODERATOR = "moderator"
-
-
-# Define the Enum class
-import enum
 
 
 class EventTypeEnum(enum.Enum):

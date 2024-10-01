@@ -5,8 +5,12 @@ from typing import Optional
 from pydantic import BaseModel
 from app.config import settings
 from uuid import UUID
+from fastapi import Header
+from fastapi.security import OAuth2PasswordBearer
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="Authentication")
 
 
 def hash_password(password: str) -> str:
@@ -35,22 +39,25 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     return encoded_jwt
 
 
-def verify_token(token: str, credentials_exception):
+def decode_token(token: str, credentials_exception):
     try:
+        token_bytes = token.encode("utf-8")
         payload = jwt.decode(
-            token, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM]
+            token_bytes, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM]
         )
         email: str = payload.get("sub")
         user_id: UUID = payload.get("user_id")
         if email is None:
             raise credentials_exception
         token_data = TokenData(email=email, user_id=user_id)
-    except jwt.PyJWTError:
+    except Exception as e:
+        print(e)
         raise credentials_exception
     return token_data
 
 
-def get_user_id_from_token(token: str):
+def get_user_id_from_token(Authentication: str = Header(None)):
+    token_type, token = Authentication.split()
     payload = jwt.decode(
         token, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM]
     )

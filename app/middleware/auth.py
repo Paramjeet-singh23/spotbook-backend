@@ -1,6 +1,6 @@
 from fastapi import Request, HTTPException
 from starlette.status import HTTP_401_UNAUTHORIZED
-from app.utils.security import verify_token
+from app.utils.security import decode_token
 from app.db.session import get_db
 from app.crud.user import get_user_by_email
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -28,6 +28,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
         if authentication:
             try:
                 scheme, token = authentication.split()
+                print(scheme, token)
                 if scheme.lower() != "bearer":
                     raise HTTPException(
                         status_code=HTTP_401_UNAUTHORIZED,
@@ -38,7 +39,8 @@ class AuthMiddleware(BaseHTTPMiddleware):
                     detail="Could not validate credentials",
                     headers={"WWW-Authenticate": "Bearer"},
                 )
-                token_data = verify_token(token, credentials_exception)
+                print(token)
+                token_data = decode_token(token, credentials_exception)
 
                 # Use context manager for database session
                 with next(get_db()) as db:
