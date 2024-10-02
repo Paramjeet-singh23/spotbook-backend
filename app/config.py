@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     HOST: str
     PORT: int
     VERSION: str
-    ALLOWED_HOSTS: list
+    # ALLOWED_HOSTS: list
     FASTAPI_DEBUG: bool
 
     # DATABASE
